@@ -9,7 +9,24 @@ services:
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
     volumes:
       - ../../:/myapp
+    environment:
+      RAILS_ENV: "development"
+      REDIS_URL: "redis://redis:6379/12"
     ports:
       - "3000:3000"
     depends_on:
       - db
+  redis:
+    image: redis
+    volumes:
+      - ../../tmp/db:/var/lib/redis/data
+  sidekiq:
+    build: ../../
+    command: 'bundle exec sidekiq'
+    volumes:
+      - ../../:/myapp
+    environment:
+      RAILS_ENV: "development"
+      REDIS_URL: "redis://redis:6379/12"
+    depends_on:
+      - redis
