@@ -6,8 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-author = Author.create(name: "De Angelo", kind: "C-Class")
-post = Post.create(title: "The sistine chapel", body: "Is the most amazing thing ever", author_id: author.id)
-post = Post.create(title: "Pastel and Colors", body: "Are a wonderwall", author_id: author.id)
-post = Post.create(title: "Passionate Oils", body: "For painting", author_id: author.id)
-
+author = Author.create(name: "Raphael Jambalos", kind: "Programmer")
+post = Post.create(title: "Redis", body: "This is a in-memory database often used for caching.", author_id: author.id)
+post = Post.create(title: "PostgreSQL", body: "This is a transactional database used for transactions", author_id: author.id)
+post = Post.create(title: "DynamoDB", body: "This is a NoSQL database used for concurrent workloads.", author_id: author.id)
