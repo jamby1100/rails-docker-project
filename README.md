@@ -1,24 +1,4 @@
-# README
+# Rails Docker Project
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This project is the source code to my blog series: https://dev.to/jamby1100/more-than-hello-world-in-docker-run-rails-sidekiq-web-apps-in-docker-1b37.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
