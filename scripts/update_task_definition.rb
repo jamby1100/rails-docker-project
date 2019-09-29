@@ -55,6 +55,11 @@ end
 
 # (3) Define how the web task definition and the sidekiq task definition differs
 
+log = {
+  web: ENV["CLOUDWATCH_WEB_LOG_GROUP"],
+  sidekiq: ENV["CLOUDWATCH_SIDEKIQ_LOG_GROUP"],
+}
+
 base_td[:container_definitions][0][:image] = "#{ENV['REPO_URL']}:#{ENV['LATEST_VERSION']}"
 base_td[:container_definitions][0][:environment] = env_vars
 
