@@ -73,7 +73,7 @@ web_td[:network_mode] = nil
 
 sidekiq_td = deep_copy(base_td)
 sidekiq_td[:container_definitions][0][:command] = ["sidekiq", "-C", "config/sidekiq.yml"]
-sidekiq_td[:container_definitions][0][:log_configuration][:options]["awslogs-group"] = log[:data]
+sidekiq_td[:container_definitions][0][:log_configuration][:options]["awslogs-group"] = log[:sidekiq]
 sidekiq_td[:container_definitions][0][:name] = "web"
 sidekiq_td[:requires_compatibilities] = ["EC2"]
 sidekiq_td[:family] = ENV["TASK_DEFINITION_SIDEKIQ"]
