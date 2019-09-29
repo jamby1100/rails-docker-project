@@ -1,0 +1,48 @@
+version: 0.2 
+ 
+phases: 
+  install:
+    runtime-versions:
+        docker: 18
+    commands:
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  pre_build:
+    commands:
+    - echo Logging in to Amazon ECR....
+    - aws --version
+    - $(aws ecr get-login --no-include-email --region $CI_REGION)
+
+    - echo "including rubygems.org as repo"
+    - gem sources --add https://rubygems.org/
+
+    - echo "installing aws-sdk-ecr"
+    - gem install 'aws-sdk-ecr'
+
+    - echo "installing aws-sdk-ecs"
+    - gem install 'aws-sdk-ecs'
+
+    - echo "load the latest ECR image revision number"
+    - LATEST_VERSION=$(ruby scripts/load_latest_image_version_number.rb)
+    - echo the version now is $LATEST_VERSION
+
+  build: 
+    commands: 
+    - echo Build started on `date`
+    - echo Building the Docker image...
+    - docker build -t mydockerrepo .
+
+    - docker tag mydockerrepo:latest $REPO_URL:$LATEST_VERSION
+  post_build: 
+    commands: 
+    - echo Build completed on `date` 
+    - echo pushing to repo
+    - docker push $REPO_URL:$LATEST_VERSION
+    - ruby scripts/update_task_definition.rb
+    # - location 
+    # - location 
+  #discard-paths: yes 
+  #base-directory: location 
+#cache: 
+  #paths: 
+    # - paths
