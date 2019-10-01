@@ -22,7 +22,7 @@ base_td = {
                 },
                 port_mappings: [
                   {
-                    host_port: 8080,
+                    host_port: 0,
                     protocol: "tcp",
                     container_port: 8080
                   }
