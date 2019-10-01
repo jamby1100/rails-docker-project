@@ -26,6 +26,11 @@ phases:
     - LATEST_VERSION=$(ruby scripts/load_latest_image_version_number.rb)
     - echo the version now is $LATEST_VERSION
 
+    - echo "Creating folders for pid files"
+    - mkdir shared
+    - mkdir shared/pids
+    - mkdir shared/sockets
+
   build: 
     commands: 
     - echo Build started on `date`
