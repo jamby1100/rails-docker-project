@@ -2,7 +2,7 @@
 
 require "aws-sdk-ecs"
 
-# (1) Define the ECS client, deep_copy method and the base task definition
+# (PART 1) Define the ECS client, deep_copy method and the base task definition
 
 client = Aws::ECS::Client.new
 
@@ -36,7 +36,7 @@ base_td = {
             volumes: []
           }
 
-# (2) All env variables prepended "ECS_" will be included in the task definition
+# (PART 2) All env variables prepended "ECS_" will be included in the task definition
 
 env_vars = []
 
@@ -53,7 +53,7 @@ relevant_envs.each do |key, value|
   }
 end
 
-# (3) Define how the web task definition and the sidekiq task definition differs
+# (PART 3) Define how the web task definition and the sidekiq task definition differs
 
 log = {
   web: ENV["CLOUDWATCH_WEB_LOG_GROUP"],
@@ -79,7 +79,7 @@ sidekiq_td[:requires_compatibilities] = ["EC2"]
 sidekiq_td[:family] = ENV["TASK_DEFINITION_SIDEKIQ"]
 sidekiq_td[:network_mode] = nil
 
-# (4) Create a new revision of the web and sidekiq task definitions
+# (PART 4) Create a new revision of the web and sidekiq task definitions
 
 client.register_task_definition(web_td)
 client.register_task_definition(sidekiq_td)
