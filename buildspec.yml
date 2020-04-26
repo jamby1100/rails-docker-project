@@ -12,6 +12,10 @@ phases:
       - REPOSITORY_URI=874957933250.dkr.ecr.us-west-2.amazonaws.com/sample-docker-rails-app
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - echo "Creating folders for pid files"
+      - mkdir shared
+      - mkdir shared/pids
+      - mkdir shared/sockets
   build:
     commands:
       - echo Build started on `date`
