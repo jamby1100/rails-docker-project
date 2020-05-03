@@ -13,9 +13,6 @@ phases:
     - aws --version
     - $(aws ecr get-login --no-include-email --region $CI_REGION)
 
-    - echo "including rubygems.org as repo"
-    - gem sources --add https://rubygems.org/
-
     - echo "installing aws-sdk-ecr"
     - gem install 'aws-sdk-ecr'
 
