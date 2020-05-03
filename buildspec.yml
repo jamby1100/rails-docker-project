@@ -1,27 +1,39 @@
-version: 0.2
-
-phases:
+version: 0.2 
+ 
+phases: 
   install:
     runtime-versions:
-      docker: 18
+        docker: 18
+    commands:
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
-      - aws --version
-      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
-      - REPOSITORY_URI=874957933250.dkr.ecr.us-west-2.amazonaws.com/sample-docker-rails-app
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - echo "Creating folders for pid files"
-      - mkdir shared
-      - mkdir shared/pids
-      - mkdir shared/sockets
-  build:
-    commands:
-      - echo Build started on `date`
-      - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+    - echo Logging in to Amazon ECR....
+    - aws --version
+    - $(aws ecr get-login --no-include-email --region $CI_REGION)
+
+    - echo "including rubygems.org as repo"
+    - gem sources --add https://rubygems.org/
+
+    - echo "installing aws-sdk-ecr"
+    - gem install 'aws-sdk-ecr'
+
+    - echo "load the latest ECR image revision number"
+    - LATEST_VERSION=$(ruby scripts/load_latest_image_version_number.rb)
+    - echo the version now is $LATEST_VERSION
+
+    - echo "Creating folders for pid files"
+    - mkdir shared
+    - mkdir shared/pids
+    - mkdir shared/sockets
+
+  build: 
+    commands: 
+    - echo Build started on `date`
+    - echo Building the Docker image...
+    - docker build -t $REPO_URL:latest .
+    - docker tag $REPO_URL:latest $REPO_URL:$LATEST_VERSION
   post_build:
     commands:
       - echo Build completed on `date`
@@ -29,6 +41,6 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
-      - printf '[{"name":"docker-rails-app","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - printf '[{"name":"web","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 artifacts:
     files: imagedefinitions.json
