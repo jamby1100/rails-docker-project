@@ -14,3 +14,10 @@ staging:
   password: <%= ENV['POSTGRESQL_PASSWORD'] %>
   pool: 5
   database: <%= ENV['POSTGRESQL_DB'] %>
+test:
+  adapter: postgresql
+  encoding: unicode
+  username: rjambalos
+  password:
+  pool: 5
+  database: ruby_docker_app_test_database

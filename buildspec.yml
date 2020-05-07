@@ -1,4 +1,9 @@
-version: 0.2 
+version: 0.2
+env:
+  variables:
+    PGDATABASE: "ruby_docker_app_test_database"
+    PGUSER: "rjambalos"
+    PGPASSWORD: ""
  
 phases: 
   install:
@@ -7,8 +12,13 @@ phases:
     commands:
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 --storage-driver=overlay2&
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+      - docker pull postgres:latest
   pre_build:
     commands:
+      - docker run -e PGPASSWORD -e PGUSER -e PGDATABASE -d -p 5432:5432 postgres
+      - rspec
+
+
       - echo Logging in to Amazon ECR....
       - aws --version
       - $(aws ecr get-login --no-include-email --region $CI_REGION)
