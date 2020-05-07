@@ -16,6 +16,7 @@ phases:
   pre_build:
     commands:
       - docker run -e PGPASSWORD -e PGUSER -e PGDATABASE -d -p 5432:5432 postgres
+      - bundle
       - rspec
 
 
